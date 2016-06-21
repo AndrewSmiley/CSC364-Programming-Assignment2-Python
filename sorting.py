@@ -1,115 +1,129 @@
 __author__ = 'Andrew'
 from random import randint
+import time,sys
 
-def insertion_sort(array):
-    sublist = [array[0]]
-    for i in range(1, len(array)):
-        if array[i] >= sublist[i-1]:
-            sublist.append(array[i])
-            continue
-        if array[i] <= sublist[0]:
-            sublist.insert(0, array[i])
-            continue
-        for j in reversed(range(0, i)):
-            if array[i] >= sublist[j-1] and array [i] <=sublist[j]:
-                sublist.insert(j, array[i])
-                break
-    return sublist
+
 """
-// To heapify a subtree rooted with node i which is
-// an index in arr[]. n is size of heap
-void heapify(int arr[], int n, int i)
-{
-    int largest = i;  // Initialize largest as root
-    int l = 2*i + 1;  // left = 2*i + 1
-    int r = 2*i + 2;  // right = 2*i + 2
-
-    // If left child is larger than root
-    if (l < n && arr[l] > arr[largest])
-        largest = l;
-
-    // If right child is larger than largest so far
-    if (r < n && arr[r] > arr[largest])
-        largest = r;
-
-    // If largest is not root
-    if (largest != i)
-    {
-        swap(arr[i], arr[largest]);
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
-}
-
-// main function to do heap sort
-void heapSort(int arr[], int n)
-{
-    // Build heap (rearrange array)
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
-
-    // One by one extract an element from heap
-    for (int i=n-1; i>=0; i--)
-    {
-        // Move current root to end
-        swap(arr[0], arr[i]);
-
-        // call max heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-}
+heap sort fns
 """
-# def heapify(array, n, i):
-#     largest = i
-#     l = 2*i +1  #left
-#     r = 2*i +2 #right
-#     if l < n and array[l] > array[largest]:
-#         largest = l
-#     if r < n and array[r] > array[largest]:
-#         largest = r
-#     if largest != i:
-#         array[i], array[largest] = array[largest], array[i]
-#         heapify(array, n, i)
-# def heapsort(array, n):
-#     for i in range(n, -1, -1):
-#         heapify(array, n, i)
-#
-#     for i in range(n-1, 0, -1):
-#         array[0], array[i] = array[i], array[0]
-#         heapify(array, i, 0)
-#     return array
 def heapify(arr, n, i):
-    largest = i
+    _max = i
     l = 2 * i + 1
     r = 2 * i + 2
     if l < n and arr[i] < arr[l]:
-        largest = l
-    if r < n and arr[largest] < arr[r]:
-        largest = r
-    if largest != i:
-        arr[i],arr[largest] = arr[largest],arr[i]  # swap
-        heapify(arr, n, largest)
+        _max = l
+    if r < n and arr[_max] < arr[r]:
+        _max = r
+    if _max != i:
+        arr[i],arr[_max] = arr[_max],arr[i]
+        heapify(arr, n, _max)
 
 def heapSort(arr):
     n = len(arr)
     for i in reversed(range(0, n+1)): #range(n, -1, -1):
         heapify(arr, n, i)
     for i in reversed(range(0, n)):#range(n-1, 0, -1):
-        arr[i], arr[0] = arr[0], arr[i]   # swap
+        arr[i], arr[0] = arr[0], arr[i]
         heapify(arr, i, 0)
 
+"""
+Radix Sort fns
+"""
+
+def radix_count(array, exp):
+
+    n = len(array)
+    output = [0] * (n)
+    count = [0] * (10)
+
+    for i in range(0, n):
+        index = (array[i]/exp)
+        count[ index %10 ] = count[ index %10 ]+1
+
+    for i in range(1,10):
+        count[i] = count[i-1]+count[i]
+
+    i = n-1
+    while i>=0:
+        index = (array[i]/exp)
+        output[ count[ (index)%10 ] - 1] = array[i]
+        count[ (index)%10 ] -= 1
+        i -= 1
+    for i in range(0,len(array)):
+        array[i] = output[i]
 
 def radix_sort(array):
-    pass
+    maxsize = sys.maxint
+    exp = 1
+    while maxsize/exp > 0:
+        radix_count(array,exp)
+        exp *= 10
 
-ordered= [i for i in range(1, 101)]
-unordered = [randint(1, 10001) for i in range(1, 1001)]
+#slimmed this down based upon some reading online, vs what I had before w/ the potential benefit on linkedlists w/ iters
+def insertion_sort(array):
+    for i in range(1, len(array)):
+        k,j = array[i], i-1
+        while j >=0 and k < array[j]:
+            array[j+1] = array[j]
+            j =j-1
+        array[j+1] = k
 
-#do insertion sort first
-lst = [5,2,6,71,92]
-heapSort(lst)
 
-# insertion_sorted = insertion_sort([5,4,3,2,1])
+
+#could make this cleaner
+#todo make this cleaner
+ordered_one= [i for i in range(1, 100000)]
+unordered_one = [randint(1, 100000) for i in range(1, 100001)]
+ordered_two= [i for i in range(1, 200000)]
+unordered_two = [randint(1, 200000) for i in range(1, 200001)]
+print "="*25
+print "Insertion Sort Outputs"
+print "="*25
+insertion_sort_tests = {"Ordered List of 100k": ordered_one, "Unordered List of 100k":unordered_one,
+                   "Ordered List of 200k":ordered_two, "Unordered List of 200k": unordered_two }
+
+for k, v in insertion_sort_tests.iteritems():
+    print(k)
+    start = time.time()
+    heapSort(v)
+    end=time.time()
+    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+
+ordered_one= [i for i in range(1, 100000)]
+unordered_one = [randint(1, 100000) for i in range(1, 100001)]
+ordered_two= [i for i in range(1, 200000)]
+unordered_two = [randint(1, 200000) for i in range(1, 200001)]
+print "="*25
+print "Heap Sort Outputs"
+print "="*25
+heap_sort_tests = {"Ordered List of 100k": ordered_one, "Unordered List of 100k":unordered_one,
+                   "Ordered List of 200k":ordered_two, "Unordered List of 200k": unordered_two }
+
+
+for k, v in heap_sort_tests.iteritems():
+    print(k)
+    start = time.time()
+    heapSort(v)
+    end=time.time()
+    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+
+ordered_one= [i for i in range(1, 100000)]
+unordered_one = [randint(1, 100000) for i in range(1, 100001)]
+ordered_two= [i for i in range(1, 200000)]
+unordered_two = [randint(1, 200000) for i in range(1, 200001)]
+
+radix_sort_tests = {"Ordered List of 100k": ordered_one, "Unordered List of 100k":unordered_one,
+                   "Ordered List of 200k":ordered_two, "Unordered List of 200k": unordered_two }
+
+print "="*25
+print "Radix Sort Outputs"
+print "="*25
+for k, v in radix_sort_tests.iteritems():
+    print(k)
+    start = time.time()
+    radix_sort(v)
+    end=time.time()
+    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+
 print ""
 
