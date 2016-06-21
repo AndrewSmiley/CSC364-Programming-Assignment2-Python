@@ -57,7 +57,7 @@ def radix_sort(array):
     exp = 1
     while maxsize/exp > 0:
         radix_count(array,exp)
-        exp *= 10
+        exp = exp*10
 
 #slimmed this down based upon some reading online, vs what I had before w/ the potential benefit on linkedlists w/ iters
 def insertion_sort(array):
