@@ -87,7 +87,7 @@ for k, v in insertion_sort_tests.iteritems():
     start = time.time()
     heapSort(v)
     end=time.time()
-    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+    print ("Time elapsed: %s seconds \n" %(str((end-start)*1000)))
 
 ordered_one= [i for i in range(1, 100000)]
 unordered_one = [randint(1, 100000) for i in range(1, 100001)]
@@ -105,7 +105,7 @@ for k, v in heap_sort_tests.iteritems():
     start = time.time()
     heapSort(v)
     end=time.time()
-    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+    print ("Time elapsed: %s seconds \n" %(str((end-start)*1000)))
 
 ordered_one= [i for i in range(1, 100000)]
 unordered_one = [randint(1, 100000) for i in range(1, 100001)]
@@ -123,7 +123,7 @@ for k, v in radix_sort_tests.iteritems():
     start = time.time()
     radix_sort(v)
     end=time.time()
-    print ("Time elapsed: %s seconds \n" %(str(end-start)))
+    print ("Time elapsed: %s seconds \n" %(str((end-start)*1000)))
 
 print ""
 
