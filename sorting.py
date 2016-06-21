@@ -16,91 +16,88 @@ def insertion_sort(array):
                 break
     return sublist
 """
-public static void heapSort(int[] a){
-	int count = a.length;
+// To heapify a subtree rooted with node i which is
+// an index in arr[]. n is size of heap
+void heapify(int arr[], int n, int i)
+{
+    int largest = i;  // Initialize largest as root
+    int l = 2*i + 1;  // left = 2*i + 1
+    int r = 2*i + 2;  // right = 2*i + 2
 
-	//first place a in max-heap order
-	heapify(a, count);
+    // If left child is larger than root
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
 
-	int end = count - 1;
-	while(end > 0){
-		//swap the root(maximum value) of the heap with the
-		//last element of the heap
-		int tmp = a[end];
-		a[end] = a[0];
-		a[0] = tmp;
-		//put the heap back in max-heap order
-		siftDown(a, 0, end - 1);
-		//decrement the size of the heap so that the previous
-		//max value will stay in its proper place
-		end--;
-	}
+    // If right child is larger than largest so far
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+
+    // If largest is not root
+    if (largest != i)
+    {
+        swap(arr[i], arr[largest]);
+
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
+    }
 }
 
-public static void heapify(int[] a, int count){
-	//start is assigned the index in a of the last parent node
-	int start = (count - 2) / 2; //binary heap
+// main function to do heap sort
+void heapSort(int arr[], int n)
+{
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
 
-	while(start >= 0){
-		//sift down the node at index start to the proper place
-		//such that all nodes below the start index are in heap
-		//order
-		siftDown(a, start, count - 1);
-		start--;
-	}
-	//after sifting down the root all nodes/elements are in heap order
-}
+    // One by one extract an element from heap
+    for (int i=n-1; i>=0; i--)
+    {
+        // Move current root to end
+        swap(arr[0], arr[i]);
 
-public static void siftDown(int[] a, int start, int end){
-	//end represents the limit of how far down the heap to sift
-	int root = start;
-
-	while((root * 2 + 1) <= end){      //While the root has at least one child
-		int child = root * 2 + 1;           //root*2+1 points to the left child
-		//if the child has a sibling and the child's value is less than its sibling's...
-		if(child + 1 <= end && a[child] < a[child + 1])
-			child = child + 1;           //... then point to the right child instead
-		if(a[root] < a[child]){     //out of max-heap order
-			int tmp = a[root];
-			a[root] = a[child];
-			a[child] = tmp;
-			root = child;                //repeat to continue sifting down the child now
-		}else
-			return;
-	}
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
 }
 """
-def sift_down(array, start, end):
-    root = start
-    while (start *2+1) <= end:
-        child = root *2+1
-        if (child + 1) <= end and array[child] < array[child +1]:
-            child = child+1
-        if array[root] < array[child]:
-            tmp = array[root]
-            array[root] = array[child]
-            array[child] = tmp
-            root = child
-        else:
-            return
+# def heapify(array, n, i):
+#     largest = i
+#     l = 2*i +1  #left
+#     r = 2*i +2 #right
+#     if l < n and array[l] > array[largest]:
+#         largest = l
+#     if r < n and array[r] > array[largest]:
+#         largest = r
+#     if largest != i:
+#         array[i], array[largest] = array[largest], array[i]
+#         heapify(array, n, i)
+# def heapsort(array, n):
+#     for i in range(n, -1, -1):
+#         heapify(array, n, i)
+#
+#     for i in range(n-1, 0, -1):
+#         array[0], array[i] = array[i], array[0]
+#         heapify(array, i, 0)
+#     return array
+def heapify(arr, n, i):
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+    if l < n and arr[i] < arr[l]:
+        largest = l
+    if r < n and arr[largest] < arr[r]:
+        largest = r
+    if largest != i:
+        arr[i],arr[largest] = arr[largest],arr[i]  # swap
+        heapify(arr, n, largest)
 
-
-
-def heapify(array,count):
-    start = (count -2 )/2
-    while start >=0:
-        sift_down(array, start, count-1)
-        start = start-1
-def heap_sort(array):
-    count = len(array)
-    heapify(array, count)
-    end= count-1
-    while end > 0:
-        tmp = array[end]
-        array[end]= array[0]
-        array[0] =tmp
-        sift_down(array, 0, end-1)
-        end = end-1
+def heapSort(arr):
+    n = len(arr)
+    for i in reversed(range(0, n+1)): #range(n, -1, -1):
+        heapify(arr, n, i)
+    for i in reversed(range(0, n)):#range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]   # swap
+        heapify(arr, i, 0)
 
 
 def radix_sort(array):
@@ -110,7 +107,9 @@ ordered= [i for i in range(1, 101)]
 unordered = [randint(1, 10001) for i in range(1, 1001)]
 
 #do insertion sort first
-heap_sorted = heap_sort([5,2,6,71,92])
+lst = [5,2,6,71,92]
+heapSort(lst)
+
 # insertion_sorted = insertion_sort([5,4,3,2,1])
 print ""
 
